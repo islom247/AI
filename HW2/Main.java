@@ -7,7 +7,7 @@ public class Main {
         int part = in.nextInt();
         //for part one (#missionaries and #cannibals equals to 6)
         if (part == 1) {
-            //initial number of missionaries and cannibals
+            //initial number of missionaries, cannibals and Cannibals
             int m = 6;
             int c = 6;
             int boatCapacity = 5;
@@ -18,7 +18,7 @@ public class Main {
 
             //initializing the tree
             Node tree = new Node();
-            createNewState(tree, initialState, "", finalState, boatCapacity);
+            createNewState(tree, initialState, "", finalState, boatCapacity, new int[]{Integer.MAX_VALUE});
 
             //list of states that we traverse before reaching goal node
             //combining them gives us a path that is the shortest
@@ -26,12 +26,6 @@ public class Main {
 
             //performing A* search on root node
             tree.aStarSearch(shortestPath, finalState);
-
-            //printing the length of shortest path
-            System.out.println(tree.getLengthAndNumberOfTheShortestPaths(finalState)[0]);
-
-            //printing the number of shortest paths
-            System.out.println(tree.getLengthAndNumberOfTheShortestPaths(finalState)[1]);
 
             //printing the sequence of moves that missionaries and cannibals perform
             //the code below prints those moves similar to what's given in the assignment document
@@ -89,26 +83,27 @@ public class Main {
 
             //initializing the tree
             Node tree = new Node();
-            createNewState(tree, initialState, "", finalState, boatCapacity);
+            createNewState(tree, initialState, "", finalState, boatCapacity, new int[]{Integer.MAX_VALUE});
 
             //printing the length of the shortest path
             System.out.println("Shortest length: " + tree.getLengthAndNumberOfTheShortestPaths(finalState)[0]);
 
             //printing the number of shortest paths
             System.out.println("The number of the shortest paths: " + tree.getLengthAndNumberOfTheShortestPaths(finalState)[1]);
-            tree.dfs("", finalState);
         }
     }
 
-    private static void createNewState(Node tree, String curState, String path, String finalState, int boatCapacity) {
+    // builds the tree by recursively adding nodes to parent
+    private static void createNewState(Node tree, String curState, String path, String finalState, int boatCapacity, int[] min) {
         char[] currentStateCharArray = curState.toCharArray();
         int missionariesOnWest = currentStateCharArray[0] - '0';
         int cannibalsOnWest = currentStateCharArray[1] - '0';
         int missionariesOnEast = currentStateCharArray[4] - '0';
         int cannibalsOnEast = currentStateCharArray[5] - '0';
-        //we stop if the path we covered so far contains
-        //the current state to ignore duplicates
-        if (path.contains(curState)) {
+        // we stop if the path we covered so far contains
+        // the current state to ignore duplicates
+        // if the length of current path greater than found minimum path then it executes
+        if (path.contains(curState) || path.length() / 8 > min[0]) {
             return;
         }
         // the if statement ensures cannibals don not outnumber missionaries
@@ -117,8 +112,6 @@ public class Main {
                 (missionariesOnEast >= cannibalsOnEast || missionariesOnEast == 0) &&
                 missionariesOnWest >= 0 && cannibalsOnWest >= 0 && missionariesOnEast >= 0
                 && cannibalsOnEast >= 0) {
-
-            System.out.println(curState);
 
             //adds current state to current path
             path += " " + curState;
@@ -132,6 +125,7 @@ public class Main {
 
             //we terminate if we reach final state
             if (curState.equals(finalState)) {
+                min[0] = path.length() / 8;
                 return;
             }
 
@@ -145,11 +139,11 @@ public class Main {
                         if (bw) {
                             createNewState(current, "" + (missionariesOnWest - missionaries) +
                                     (cannibalsOnWest - cannibals) + "0-" + (missionariesOnEast + missionaries) +
-                                    (cannibalsOnEast + cannibals) + "1", path, finalState, boatCapacity);
+                                    (cannibalsOnEast + cannibals) + "1", path, finalState, boatCapacity, min);
                         } else {
                             createNewState(current, "" + (missionariesOnWest + missionaries) +
                                     (cannibalsOnWest + cannibals) + "1-" + (missionariesOnEast - missionaries) +
-                                    (cannibalsOnEast - cannibals) + "0", path, finalState, boatCapacity);
+                                    (cannibalsOnEast - cannibals) + "0", path, finalState, boatCapacity, min);
                         }
                     }
                 }
