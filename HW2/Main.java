@@ -7,7 +7,7 @@ public class Main {
         int part = in.nextInt();
         // for part one (#missionaries and #cannibals equals to 6)
         if (part == 1) {
-            //initial number of missionaries, cannibals and boat capacity
+            // initial number of missionaries, cannibals and boat capacity
             int m = 6;
             int c = 6;
             int boatCapacity = 5;
