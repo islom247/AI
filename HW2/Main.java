@@ -1,5 +1,14 @@
 import java.util.*;
 
+/*
+ * Group Name: CROSSLORD
+ * Kasymbek Tashbaev
+ * Islomiddin Sodiqov
+ * Elif Bilge
+ * Osama Zahid
+ * Alina Zhumasheva
+ * Date: 5.11.19
+ * */
 public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
