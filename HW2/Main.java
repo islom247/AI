@@ -5,45 +5,45 @@ public class Main {
         Scanner in = new Scanner(System.in);
         System.out.println("Which part do you want to work with? (1 or 2)");
         int part = in.nextInt();
-        //for part one (#missionaries and #cannibals equals to 6)
+        // for part one (#missionaries and #cannibals equals to 6)
         if (part == 1) {
             //initial number of missionaries, cannibals and boat capacity
             int m = 6;
             int c = 6;
             int boatCapacity = 5;
 
-            //initial and final states represented by a string
+            // initial and final states represented by a string
             String initialState = "" + m + c + "1-000";
             String finalState = "000-" + m + c + "1";
 
-            //initializing the tree
+            // initializing the tree
             Node tree = new Node();
             createNewState(tree, initialState, "", finalState, boatCapacity, new int[]{Integer.MAX_VALUE});
 
-            //list of states that we traverse before reaching goal node
-            //combining them gives us a path that is the shortest
+            // list of states that we traverse before reaching goal node
+            // combining them gives us a path that is the shortest
             ArrayList<String> shortestPath = new ArrayList<>();
 
-            //performing A* search on root node
+            // performing A* search on root node
             tree.aStarSearch(shortestPath, finalState);
 
-            //printing the sequence of moves that missionaries and cannibals perform
-            //the code below prints those moves similar to what's given in the assignment document
+            // printing the sequence of moves that missionaries and cannibals perform
+            // the code below prints those moves similar to what's given in the assignment document
             for (int k = 0; k < shortestPath.size(); ++k) {
                 String state = shortestPath.get(k);
                 if (k != 0) {
-                    //if the boat is not on the west that means
-                    //we sent some missionaries and cannibals to
-                    //the east side
+                    // if the boat is not on the west that means
+                    // we sent some missionaries and cannibals to
+                    // the east side
                     if (state.charAt(2) != '1') {
                         System.out.printf("SEND\t%d MISSIONARIES %d CANNIBALS\n",
                                 (state.charAt(4) - shortestPath.get(k - 1).charAt(4)),
                                 (state.charAt(5) - shortestPath.get(k - 1).charAt(5))
                         );
                     }
-                    //if it is on the west side
-                    //that means some missionaries
-                    //or cannibals returned to the west side
+                    // if it is on the west side
+                    // that means some missionaries
+                    // or cannibals returned to the west side
                     else {
                         System.out.printf("RETURN\t%d MISSIONARIES %d CANNIBALS\n",
                                 (state.charAt(0) - shortestPath.get(k - 1).charAt(0)),
@@ -51,7 +51,7 @@ public class Main {
                         );
                     }
                 }
-                //printing number of missionaries and cannibals on each side
+                // printing number of missionaries and cannibals on each side
                 for (int i = 0; i < state.charAt(0) - '0'; i++) {
                     System.out.print("M");
                 }
@@ -70,27 +70,29 @@ public class Main {
                 System.out.println("\n");
             }
         }
-        //for part two (#missionaries and #cannibals equals to 4)
+        // for part two (#missionaries and #cannibals equals to 4)
         else {
             /* START OF PART 2 */
-            //initial number of missionaries, cannibals and boat capacity
+            // initial number of missionaries, cannibals and boat capacity
             int m = 4;
             int c = 4;
             int boatCapacity = 3;
 
-            //initial and final states represented by a string
-            String initialState = "" + m + c + "1-000";
-            String finalState = "000-" + m + c + "1";
+            // initial and final states represented by a string
+            String initialState = "" + m + c + "1-000"; // 441-000
+            String finalState = "000-" + m + c + "1"; // 000-441
 
-            //initializing the tree
+            // initializing the tree
             Node tree = new Node();
             createNewState(tree, initialState, "", finalState, boatCapacity, new int[]{Integer.MAX_VALUE});
 
-            //printing the length of the shortest path
+            // description of invoked method that we used to find shortest path and the
+            // number of such paths is given on top of the method implementation
+            // printing the length of the shortest path
             System.out.println("Shortest length: " + tree.getLengthAndNumberOfTheShortestPaths(finalState)[0]);
 
-            //printing the number of shortest paths
-            System.out.println("The number of the shortest paths: " + tree.getLengthAndNumberOfTheShortestPaths(finalState)[1]);
+            // printing the number of shortest paths
+            System.out.println("The number of shortest paths: " + tree.getLengthAndNumberOfTheShortestPaths(finalState)[1]);
         }
     }
 
@@ -114,27 +116,27 @@ public class Main {
                 missionariesOnWest >= 0 && cannibalsOnWest >= 0 && missionariesOnEast >= 0
                 && cannibalsOnEast >= 0) {
 
-            //adds current state to current path
+            // adds current state to current path
             path += " " + curState;
 
-            //bw is true if boat is on the west side
+            // bw is true if boat is on the west side
             boolean bw = currentStateCharArray[2] == '1';
 
-            //creating node from current state and adding it to the tree
+            // creating node from current state and adding it to the tree
             Node current = new Node(curState);
             tree.addChild(current);
 
-            //we terminate if we reach final state
+            // we terminate if we reach final state
             if (curState.equals(finalState)) {
                 min[0] = path.length() / 8;
                 return;
             }
 
-            //for all valid combinations of missionaries and cannibals we create new states
+            // for all valid combinations of missionaries and cannibals we create new states
             for (int cannibals = 0; cannibals <= boatCapacity; cannibals++) {
                 for (int missionaries = 0; missionaries <= boatCapacity; missionaries++) {
 
-                    //the if statement checks the validity of # of the missionaries and cannibals
+                    // the if statement checks the validity of # of the missionaries and cannibals
                     if (cannibals + missionaries > 0 && cannibals + missionaries <= boatCapacity
                             && (missionaries >= cannibals || missionaries == 0)) {
                         if (bw) {
@@ -152,7 +154,7 @@ public class Main {
         }
     }
 
-    //node class
+    // node class
     static class Node {
         String state;
         ArrayList<Node> children;
@@ -167,14 +169,20 @@ public class Main {
             children = new ArrayList<>();
         }
 
-        //adds a node as a child to the list of current node's children
+        // adds a node as a child to the list of current node's children
         void addChild(Node n) {
             children.add(n);
         }
 
-        //this method returns a 2 element array
-        //first element is the length of shortest path
-        //second element is the number of such paths^
+        /* to calculate the length of shortest path we just iterated
+         * over the list of the length of each path we covered to reach the target node(final state)
+         * and took the minimum value among them, and to find the number of such minimum lengths
+         * we iterated over the list of length and incremented count each time we encountered the
+         * minimum length in the list
+         */
+        // this method returns a 2 element array
+        // first element is the length of shortest path
+        // second element is the number of such paths^
         int[] getLengthAndNumberOfTheShortestPaths(String finalState) {
             ArrayList<Integer> lengths = new ArrayList<>();
 
@@ -195,17 +203,22 @@ public class Main {
             return new int[]{min, count};
         }
 
+        // allLengths list contains the the length of paths that
+        // we covered to reach the final state
         void getLengthsOfPaths(ArrayList<Integer> allLengths, int length, String finalState) {
-            //if the current node is a leaf or we reach the final state
-            //we add the length we covered so far to the lengths list
+            // if the current node is a leaf or we reach the final state
+            // we add the length we covered so far to the lengths list
             if (children.size() == 0 && state.equals(finalState)) {
-                //Since initial node is an empty state and
-                //our state space's root is added as its child
-                //we should deduct 1 from the total  length
+                // Since initial node is an empty state and
+                // our state space's root is added as its child
+                // we should deduct 1 from the total  length
                 allLengths.add(length - 1);
             } else {
-                //we recursively perform length calculation fo each child
-                //and subsequently add their length to the list provided as an argument
+                // we recursively perform length calculation fo each child
+                // and subsequently add their length to the list provided as an argument
+                // note that we add 1 to the "length" variable that represents
+                // length covered before reaching current child node
+                // +1 is for reaching this particular child node
                 for (Node child : children) {
                     child.getLengthsOfPaths(allLengths, length + 1, finalState);
                 }
@@ -214,30 +227,30 @@ public class Main {
 
         // A* search method
         void aStarSearch(ArrayList<String> path, String finalState) {
-            //since the first node we created was an empty string
-            //we neglect the case where state is equal to an empty string
+            // since the first node we created was an empty string
+            // we neglect the case where state is equal to an empty string
             if (!state.equals("")) {
                 path.add(state);
             }
 
-            //Since g(n) is same for all children of a node
-            //we consider only the h(n) values that contribute to f(n)
-            //we choose child with the least value of h(n), which we didn't need to
-            //estimate, since we could easily calculate its exact value
-            //being the length from that child to the target Node(final state)
+            // Since g(n) is same for all children of a node
+            // we consider only the h(n) values that contribute to f(n)
+            // we choose child with the least value of h(n), which we didn't need to
+            // estimate, since we could easily calculate its exact value
+            // being the length from that child to the target Node(final state)
 
-            //Node min represents child with smallest value of h(n)
+            // Node min represents child with smallest value of h(n)
             Node min = null;
 
-            //for iteration purposes minH represents minimum value of h(n) so far
+            // for iteration purposes minH represents minimum value of h(n) so far
             int minH = Integer.MAX_VALUE;
 
-            //we iterate over all children and find the one with minimum value of h(n)
+            // we iterate over all children and find the one with minimum value of h(n)
             for (Node child : children) {
 
-                //the method that we call for each children calculates the length
-                //of shortest path from that child to the target node(final state)
-                //and the number of such paths
+                // the method that we call for each children calculates the length
+                // of shortest path from that child to the target node(final state)
+                // and the number of such paths
                 int childToTarget = child.getLengthAndNumberOfTheShortestPaths(finalState)[0];
                 if (childToTarget < minH) {
                     minH = childToTarget;
@@ -245,17 +258,17 @@ public class Main {
                 }
             }
 
-            //we terminate if the current node is a leaf
+            // we terminate if the current node is a leaf
             if (children.size() == 0) {
                 return;
             }
-            //if the "min node" is not null we perform A* search on it
+            // if the "min node" is not null we perform A* search on it
             assert min != null;
             min.aStarSearch(path, finalState);
         }
 
-        //dfs method from HW1 used as an auxiliary method to
-        //test and for visualization
+        // dfs method from HW1 used as an auxiliary method to
+        // test and for visualization
         void dfs(String path, String finalState) {
             path += state;
             if (children.size() == 0) {
@@ -274,6 +287,5 @@ public class Main {
                 }
             }
         }
-
     }
 }
